@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Message App</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 30px;
+    }
+
+    .chat-box {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .messages {
+      border: 1px solid #ccc;
+      height: 300px;
+      overflow-y: auto;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .message {
+      background: #e1f5fe;
+      padding: 8px;
+      margin-bottom: 6px;
+      border-radius: 4px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chat-box">
+    <h2>Message App</h2>
+
+    <div class="messages" id="messages"></div>
+
+    <input
+      type="text"
+      id="text"
+      placeholder="Type a message and press Enter..."
+      onkeydown="handleEnter(event)"
+    />
+  </div>
+
+  <script>
+  const API = "";
+
+  const input = document.getElementById("text");
+  const messagesDiv = document.getElementById("messages");
+
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  });
+
+  function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
+
+    // Show instantly
+    messagesDiv.innerHTML += `<div class="message">${text}</div>`;
+    input.value = "";
+
+    fetch(`${API}/message`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+  }
+
+  function loadMessages() {
+    fetch(`${API}/message`)
+      .then(res => res.json())
+      .then(data => {
+        messagesDiv.innerHTML = "";
+        data.forEach(msg => {
+          messagesDiv.innerHTML += `<div class="message">${msg.text}</div>`;
+        });
+      });
+  }
+
+  loadMessages();
+</script>
+
+
+</body>
+</html>
